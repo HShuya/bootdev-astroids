@@ -1,5 +1,5 @@
 
-import pygame
+import pygame # type: ignore
 from constants  import *
 from player import *
 from circleshape import *
@@ -17,12 +17,13 @@ def main():
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
     Player.containers = (drawable, updatable)
     playmodel = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     Asteroid.containers = (asteroids, updatable, drawable)
     AsteroidField.containers = (updatable)
     field = AsteroidField()
-
+    Shot.containers = (shots, updatable, drawable)
 
     while True:
         for event in pygame.event.get():
@@ -34,11 +35,16 @@ def main():
             if playmodel.collision(astr) == True:
                 print("Game Over!")
                 exit()
+            for bullet in shots:
+                if astr.collision(bullet) == True:
+                    astr.split()
+                    bullet.kill()
                 
         for sprite in drawable:
             sprite.draw(screen)
         pygame.display.flip()
         dt = clock.tick(60) / 1000
+
 
 if __name__ == "__main__":
     main()
